@@ -12,7 +12,7 @@
             "email": "andrewhood125@gmail.com"
         }
     ],
-    "autload": {
+    "autoload": {
         "psr-4": {
             "andrewhood125\\provisioner\\": "src/"
         }
