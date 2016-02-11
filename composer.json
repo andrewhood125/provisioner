@@ -11,5 +11,10 @@
             "name": "Andrew Hood",
             "email": "andrewhood125@gmail.com"
         }
-    ]
+    ],
+    "autload": {
+        "psr-4": {
+            "andrewhood125\\provisioner\\": "src/"
+        }
+    }
 }
