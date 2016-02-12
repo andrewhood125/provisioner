@@ -1,0 +1,20 @@
+{
+    "name": "andrewhood125/provisioner",
+    "description": "Provision your environment",
+    "require": {
+        "symfony/console": "^3.0",
+        "symfony/process": "^3.0",
+        "illuminate/support": "^5.2"
+    },
+    "authors": [
+        {
+            "name": "Andrew Hood",
+            "email": "andrewhood125@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Andrewhood125\\Provisioner\\": "src/"
+        }
+    }
+}
