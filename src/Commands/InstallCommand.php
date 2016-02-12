@@ -15,12 +15,12 @@ class InstallCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('install')
+            ->setName('remote:install')
             ->addArgument('project', InputArgument::REQUIRED,
                         'The project you would like to install on GitHub. username/repository')
             ->addArgument('host', InputArgument::REQUIRED,
                         'Host to install your project at. user@domain')
-            ->setDescription('Install your project');
+            ->setDescription('Install your project on provisioned remote server.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -29,6 +29,8 @@ class InstallCommand extends Command
         $dir = explode("/", $project)[1];
         $host = $input->getArgument('host');
         $user = explode("@", $host)[0];
+        $dbuser = preg_replace("/-/","_",$dir);
+
 
         if($user == 'root') {
             $output->write('Are you sure you want to run as root?');
@@ -40,8 +42,10 @@ class InstallCommand extends Command
         };
 
         (new SshProcess($host, 'git clone https://github.com/' . $project))->run($outputFunction);
-        (new SshProcess($host, 'cd '.$dir.';composer install'))->run($outputFunction);
         (new SshProcess($host, 'sudo serve-laravel.sh '.$user.' '.$dir))->run($outputFunction);
-
+        (new SshProcess($host, 'mysql -uroot -psecret --execute "CREATE USER \''. $dbuser .'\'@\'localhost\' IDENTIFIED BY \'secret\';"'))->run($outputFunction);
+        (new SshProcess($host, 'mysql -uroot -psecret --execute "CREATE DATABASE '. $dbuser .';"'))->run($outputFunction);
+        (new SshProcess($host, 'mysql -uroot -psecret --execute "GRANT ALL PRIVILEGES ON '.$dbuser.'. * TO \''.$dbuser.'\'@\'localhost\';"'))->run($outputFunction);
+        (new SshProcess($host, 'mysql -uroot -psecret --execute "FLUSH PRIVILEGES;"'))->run($outputFunction);
     }
 }

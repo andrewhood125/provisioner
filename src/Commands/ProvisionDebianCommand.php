@@ -17,10 +17,10 @@ class ProvisionDebianCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('provision:debian')
+            ->setName('remote:provision:debian')
             ->addArgument('host', InputArgument::REQUIRED,
                         'Host to provision user@domain')
-            ->setDescription('provision your environment');
+            ->setDescription('Provision your remote debian server.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,8 +36,10 @@ class ProvisionDebianCommand extends Command
         (new SshProcess($host, 'apt-get --yes --target-release wheezy-backports install nodejs'))->run($outputFunction);
         (new SshProcess($host, 'ln -s /usr/bin/nodejs /usr/bin/node'))->run($outputFunction);
         (new SshProcess($host, 'echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale'))->run($outputFunction);
+        (new SshProcess($host, 'echo mysql-server mysql-server/root_password password secret | debconf-set-selections'))->run($outputFunction);
+        (new SshProcess($host, 'echo mysql-server mysql-server/root_password_again password secret | debconf-set-selections'))->run($outputFunction);
         (new SshProcess($host, 'locale-gen en_US.UTF-8'))->run($outputFunction);
-        (new SshProcess($host, 'apt-get install --yes sudo software-properties-common htop curl nginx redis-server php5-cli php5-fpm build-essential dos2unix gcc git libmcrypt4 libpcre3-dev make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin memcached beanstalkd'))->run($outputFunction);
+        (new SshProcess($host, 'apt-get install --yes sudo mysql-server software-properties-common htop curl nginx redis-server php5-cli php5-fpm php5-mysql build-essential dos2unix gcc git libmcrypt4 libpcre3-dev make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin memcached beanstalkd'))->run($outputFunction);
         (new SshProcess($host, 'apt-get upgrade --yes'))->run($outputFunction);
         (new SshProcess($host, 'curl -sS https://getcomposer.org/installer | php'))->run($outputFunction);
         (new SshProcess($host, 'mv composer.phar /usr/bin/composer'))->run($outputFunction);
