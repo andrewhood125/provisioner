@@ -31,7 +31,10 @@ class ProvisionDebianCommand extends Command
             $output->write($line);
         };
 
-        (new SshProcess($host, 'echo "deb http://http.debian.net/debian wheezy-backports main" | tee -a "/etc/apt/sources.list.d/nodejs.list"'))->run($outputFunction);
+        (new SshProcess($host, 'wget -O - https://packagecloud.io/gpg.key | apt-key add -'))->run($outputFunction);
+        (new SshProcess($host, 'echo "deb http://http.debian.net/debian wheezy-backports main" | tee /etc/apt/sources.list.d/nodejs.list'))->run($outputFunction);
+        (new SshProcess($host, 'echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list'))->run($outputFunction);
+
         (new SshProcess($host, 'apt-get update'))->run($outputFunction);
         (new SshProcess($host, 'apt-get --yes --target-release wheezy-backports install nodejs'))->run($outputFunction);
         (new SshProcess($host, 'ln -s /usr/bin/nodejs /usr/bin/node'))->run($outputFunction);
@@ -39,7 +42,7 @@ class ProvisionDebianCommand extends Command
         (new SshProcess($host, 'echo mysql-server mysql-server/root_password password secret | debconf-set-selections'))->run($outputFunction);
         (new SshProcess($host, 'echo mysql-server mysql-server/root_password_again password secret | debconf-set-selections'))->run($outputFunction);
         (new SshProcess($host, 'locale-gen en_US.UTF-8'))->run($outputFunction);
-        (new SshProcess($host, 'apt-get install --yes sudo mysql-server software-properties-common htop curl nginx redis-server php5-cli php5-fpm php5-mysql build-essential dos2unix gcc git libmcrypt4 libpcre3-dev make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin memcached beanstalkd'))->run($outputFunction);
+        (new SshProcess($host, 'apt-get install --yes blackfire-agent blackfire-php bmon sudo mysql-server software-properties-common htop curl nginx redis-server php5-cli php5-fpm php5-mysql build-essential dos2unix gcc git libmcrypt4 libpcre3-dev make python2.7-dev python-pip re2c supervisor unattended-upgrades whois vim libnotify-bin memcached beanstalkd'))->run($outputFunction);
         (new SshProcess($host, 'apt-get upgrade --yes'))->run($outputFunction);
         (new SshProcess($host, 'curl -sS https://getcomposer.org/installer | php'))->run($outputFunction);
         (new SshProcess($host, 'mv composer.phar /usr/bin/composer'))->run($outputFunction);
