@@ -35,11 +35,11 @@ class InstallCommand extends Command
         };
 
         (new SshProcess("deployer@$host", "git clone https://github.com/$project"))->run($outputFunction);
-        (new SshProcess("deployer@$host", "sudo serve-laravel.sh $user $dir"))->run($outputFunction);
+        (new SshProcess("deployer@$host", "sudo serve-laravel.sh deployer $dir"))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "CREATE USER \''. $dbuser .'\'@\'localhost\' IDENTIFIED BY \'secret\';"'))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "CREATE DATABASE '. $dbuser .';"'))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "GRANT ALL PRIVILEGES ON '.$dbuser.'. * TO \''.$dbuser.'\'@\'localhost\';"'))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "FLUSH PRIVILEGES;"'))->run($outputFunction);
-        (new SshProcess("root@$host", "cd $dir && ./after.sh"))->run($outputFunction);
+        (new SshProcess("root@$host", "cd ~deployer/$dir && bash after.sh"))->run($outputFunction);
     }
 }
