@@ -24,13 +24,13 @@ public function register()
 Before you provision you need to have a server spun up with a root user.
 
 ```
-./artisan remote:provision:debian root@example.org
+./artisan remote:provision:debian example.org
 ```
 
 Once the server is provisioned you can install a site.
 
 ```
-./artisan remote:install andrewhood125/ondamanda deployer@example.org
+./artisan remote:install andrewhood125/ondamanda example.org
 ```
 
 Once a site is installed you can deploy. At this point you still need to copy your environment variables over do any migrations and a composer install.
