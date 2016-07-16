@@ -33,7 +33,7 @@ class InstallCommand extends Command
 
 
         if($user == 'root') {
-            $output->write('Are you sure you want to run as root?');
+            $output->write('You\'re root. Try again as deployer.');
             return;
         }
 
@@ -41,11 +41,12 @@ class InstallCommand extends Command
             $output->write($line);
         };
 
-        (new SshProcess($host, 'git clone https://github.com/' . $project))->run($outputFunction);
-        (new SshProcess($host, 'sudo serve-laravel.sh '.$user.' '.$dir))->run($outputFunction);
+        (new SshProcess($host, "git clone https://github.com/$project"))->run($outputFunction);
+        (new SshProcess($host, "sudo serve-laravel.sh $user $dir"))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "CREATE USER \''. $dbuser .'\'@\'localhost\' IDENTIFIED BY \'secret\';"'))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "CREATE DATABASE '. $dbuser .';"'))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "GRANT ALL PRIVILEGES ON '.$dbuser.'. * TO \''.$dbuser.'\'@\'localhost\';"'))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "FLUSH PRIVILEGES;"'))->run($outputFunction);
+        (new SshProcess($host, "cd $project && ./after.sh"))->run($outputFunction);
     }
 }

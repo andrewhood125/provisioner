@@ -53,8 +53,9 @@ class ProvisionDebianCommand extends Command
         (new SshProcess($host, '/sbin/mkswap /var/swap.1'))->run($outputFunction);
         (new SshProcess($host, '/sbin/swapon /var/swap.1'))->run($outputFunction);
         $stubs = __DIR__.'/../Stubs/';
-        (new Process('scp '. $stubs .'serve-laravel.sh ' . $host.':'))->run($outputFunction);
+        (new Process("scp $stubs serve-laravel.sh $host:"))->run($outputFunction);
         (new SshProcess($host, 'mv serve-laravel.sh /usr/bin/'))->run($outputFunction);
+        (new SshProcess($host, 'chmod +x /usr/bin/serve-laravel.sh'))->run($outputFunction);
         (new SshProcess($host, 'sed -i "s/user www-data;/user deployer;/" /etc/nginx/nginx.conf'))->run($outputFunction);
         (new SshProcess($host, 'sed -i "s/# server_names_hash_bucket_size.*/server_names_hash_bucket_size 64;/" /etc/nginx/nginx.conf'))->run($outputFunction);
         (new SshProcess($host, 'sed -i "s/user = www-data/user = deployer/" /etc/php5/fpm/pool.d/www.conf'))->run($outputFunction);
