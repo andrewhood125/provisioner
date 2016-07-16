@@ -31,6 +31,8 @@ class ProvisionDebianCommand extends Command
             $output->write($line);
         };
 
+        $stubs = __DIR__.'/../Stubs/';
+
         (new SshProcess($host, 'wget -O - https://packagecloud.io/gpg.key | apt-key add -'))->run($outputFunction);
         (new SshProcess($host, 'echo "deb http://http.debian.net/debian wheezy-backports main" | tee /etc/apt/sources.list.d/nodejs.list'))->run($outputFunction);
         (new SshProcess($host, 'echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list'))->run($outputFunction);
@@ -52,8 +54,7 @@ class ProvisionDebianCommand extends Command
         (new SshProcess($host, 'chmod 0600 /var/swap.1'))->run($outputFunction);
         (new SshProcess($host, '/sbin/mkswap /var/swap.1'))->run($outputFunction);
         (new SshProcess($host, '/sbin/swapon /var/swap.1'))->run($outputFunction);
-        $stubs = __DIR__.'/../Stubs/';
-        (new Process("scp $stubs serve-laravel.sh $host:"))->run($outputFunction);
+        (new Process("scp $stubs/serve-laravel.sh $host:"))->run($outputFunction);
         (new SshProcess($host, 'mv serve-laravel.sh /usr/bin/'))->run($outputFunction);
         (new SshProcess($host, 'chmod +x /usr/bin/serve-laravel.sh'))->run($outputFunction);
         (new SshProcess($host, 'sed -i "s/user www-data;/user deployer;/" /etc/nginx/nginx.conf'))->run($outputFunction);
@@ -69,6 +70,7 @@ class ProvisionDebianCommand extends Command
         (new SshProcess($host, 'mkdir ~deployer/.ssh'))->run($outputFunction);
         (new SshProcess($host, 'cp ~/.ssh/authorized_keys ~deployer/.ssh/'))->run($outputFunction);
         (new SshProcess($host, 'chown -R deployer:deployer ~deployer/.ssh/'))->run($outputFunction);
-        (new SshProcess($host, 'echo "%deployer ALL=NOPASSWD: /usr/bin/serve-laravel.sh" | tee -a "/etc/sudoers"'))->run($outputFunction);
+        (new Process("scp $stubs/sudo $host:"))->run($outputFunction);
+        (new SshProcess($host, 'mv sudo /etc/sudoers.d/ondamanda'))->run($outputFunction);
     }
 }

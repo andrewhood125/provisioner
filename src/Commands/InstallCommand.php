@@ -47,6 +47,6 @@ class InstallCommand extends Command
         (new SshProcess($host, 'mysql -uroot -psecret --execute "CREATE DATABASE '. $dbuser .';"'))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "GRANT ALL PRIVILEGES ON '.$dbuser.'. * TO \''.$dbuser.'\'@\'localhost\';"'))->run($outputFunction);
         (new SshProcess($host, 'mysql -uroot -psecret --execute "FLUSH PRIVILEGES;"'))->run($outputFunction);
-        (new SshProcess($host, "cd $project && ./after.sh"))->run($outputFunction);
+        (new SshProcess($host, "cd $dir && ./after.sh"))->run($outputFunction);
     }
 }
