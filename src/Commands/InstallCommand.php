@@ -34,7 +34,7 @@ class InstallCommand extends Command
             $output->write($line);
         };
 
-        (new SshProcess("deployer@$host", "git clone https://github.com/$project"))->run($outputFunction);
+        (new SshProcess("deployer@$host", "git clone git@github.com:$project.git"))->run($outputFunction);
         (new SshProcess("deployer@$host", "sudo serve-laravel.sh deployer $dir"))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "CREATE USER \''. $dbuser .'\'@\'localhost\' IDENTIFIED BY \'secret\';"'))->run($outputFunction);
         (new SshProcess("deployer@$host", 'mysql -uroot -psecret --execute "CREATE DATABASE '. $dbuser .';"'))->run($outputFunction);

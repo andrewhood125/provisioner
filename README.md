@@ -34,3 +34,8 @@ Once the server is provisioned you can install a site.
 ```
 
 Once a site is installed you can deploy. At this point you still need to copy your environment variables over do any migrations and a composer install.
+
+
+### Notes
+
+Having trouble cloning a private repository? (Troubleshooting SSH agent forwarding)[https://developer.github.com/guides/using-ssh-agent-forwarding/#troubleshooting-ssh-agent-forwarding].
