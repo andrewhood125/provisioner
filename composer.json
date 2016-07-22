@@ -1,17 +1,16 @@
 {
     "name": "andrewhood125/provisioner",
-    "description": "Provision your environment",
+    "description": "Provision your environment for a Laravel application.",
+    "license": "MIT",
     "require": {
         "symfony/console": "^3.0",
         "symfony/process": "^3.0",
         "illuminate/support": "^5.2"
     },
-    "authors": [
-        {
-            "name": "Andrew Hood",
-            "email": "andrewhood125@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "Andrew Hood",
+        "email": "andrewhood125@gmail.com"
+    }],
     "autoload": {
         "psr-4": {
             "Andrewhood125\\Provisioner\\": "src/"
